@@ -1,18 +1,13 @@
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import type { Document } from '@contentful/rich-text-types';
 /* eslint-disable react/no-unescaped-entities */
-
-interface RichTextDocument {
-  nodeType: string;
-  data: any;
-  content: any[];
-}
 
 interface BlogPostFields {
   title: string;
   slug: string;
-  content: RichTextDocument;
+  content: Document;
 }
 
 interface BlogPost {
@@ -32,20 +27,21 @@ const client = createClient({
 });
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  const entries = (await client.getEntries({
+  const entries = await client.getEntries<BlogPost>({
     content_type: 'pageBlogPost',
     'fields.slug': slug,
-  })) as { items: BlogPost[] };
-
+  });
   if (entries.items.length === 0) return null;
   return entries.items[0];
 }
 
 export const revalidate = 60;
 
-// We use "any" for props here as a workaround for the type mismatch.
-// Next.js provides params as a plain object, which conflicts with its internal expectation.
-export default async function BlogPostPage({ params }: any): Promise<JSX.Element> {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<JSX.Element> {
   const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
