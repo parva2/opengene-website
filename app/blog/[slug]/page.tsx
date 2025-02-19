@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
@@ -34,21 +35,17 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
   return entries.items[0];
 }
 
-// Next.js complains if "params" isn't typed as a Promise in some environments.
-// We allow it to be either a plain object or a Promise that resolves to that object.
-type SlugParams = { slug: string } | Promise<{ slug: string }>;
-
 export const revalidate = 60;
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: SlugParams;
-}): Promise<JSX.Element> {
-  // Safely await "params" whether it's already an object or a promise.
-  const resolvedParams = await Promise.resolve(params);
+export default async function BlogPostPage(props: any): Promise<JSX.Element> {
+  // Because Next.js can treat params as a promise in some edge cases,
+  // we declare props as any, then carefully extract the slug.
+  const slug = (await props.params)?.slug;
+  if (typeof slug !== 'string') {
+    notFound();
+  }
 
-  const post = await getBlogPost(resolvedParams.slug);
+  const post = await getBlogPost(slug);
   if (!post) {
     notFound();
   }
