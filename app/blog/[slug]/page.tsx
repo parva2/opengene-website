@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
-/* eslint-disable react/no-unescaped-entities */
 
 interface BlogPostFields {
   title: string;
@@ -46,6 +45,7 @@ export default async function BlogPostPage({
   if (!post) {
     notFound();
   }
+
   return (
     <article className="p-8">
       <h1 className="text-3xl font-bold mb-4">{post.fields.title}</h1>
