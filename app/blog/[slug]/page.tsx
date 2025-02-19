@@ -1,3 +1,5 @@
+// app/blog/[slug]/page.tsx
+
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';

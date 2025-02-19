@@ -1,3 +1,5 @@
+// app/blog/page.tsx
+
 import { createClient } from 'contentful';
 import Link from 'next/link';
 
