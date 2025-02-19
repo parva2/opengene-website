@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+/* eslint-disable react/no-unescaped-entities */
 
 interface RichTextDocument {
   nodeType: string;
@@ -17,6 +18,11 @@ interface BlogPost {
   };
 }
 
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -34,7 +40,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export const revalidate = 60;
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: PageProps): Promise<JSX.Element> {
   const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
@@ -44,7 +50,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     <article className="p-8">
       <h1 className="text-3xl font-bold mb-4">{post.fields.title}</h1>
       <div className="text-lg text-gray-700">
-      {documentToReactComponents(post.fields.content)}
+        {documentToReactComponents(post.fields.content)}
       </div>
     </article>
   );
