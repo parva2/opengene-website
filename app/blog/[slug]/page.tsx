@@ -15,8 +15,7 @@ interface BlogPostFields {
   content: RichTextDocument;
 }
 
-// Provide the content type ID as the second generic parameter.
-export type BlogPost = Entry<BlogPostFields, 'pageBlogPost'>;
+export type BlogPost = Entry<BlogPostFields>;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
