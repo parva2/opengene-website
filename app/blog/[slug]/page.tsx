@@ -22,12 +22,12 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
-    // add other sys properties as needed
   };
   fields: BlogPostFields;
 }
 
 interface PageProps {
+  // Although Next.js passes a plain object, the expected type is a Promise.
   params: { slug: string };
 }
 
@@ -37,7 +37,6 @@ const client = createClient({
 });
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  // Cast the result to an object with items of type BlogPost[]
   const entries = (await client.getEntries({
     content_type: 'pageBlogPost',
     'fields.slug': slug,
@@ -50,7 +49,9 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 export const revalidate = 60;
 
 export default async function BlogPostPage({ params }: PageProps): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+  // Wrap params in Promise.resolve() so that it's treated as a promise.
+  const resolvedParams = await Promise.resolve(params);
+  const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
   }
