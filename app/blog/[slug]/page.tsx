@@ -15,7 +15,7 @@ interface BlogPostFields {
   content: RichTextDocument;
 }
 
-export interface BlogPost extends Entry<BlogPostFields> {}
+export type BlogPost = Entry<BlogPostFields>;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
