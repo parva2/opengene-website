@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
-import { createClient } from 'contentful';
+import { createClient, Entry } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-
+/* eslint-disable react/no-unescaped-entities */
 
 interface RichTextDocument {
   nodeType: string;
@@ -9,14 +9,13 @@ interface RichTextDocument {
   content: any[];
 }
 
-interface BlogPost {
-  sys: { id: string };
-  fields: {
-    title: string;
-    slug: string;
-    content: RichTextDocument;
-  };
+interface BlogPostFields {
+  title: string;
+  slug: string;
+  content: RichTextDocument;
 }
+
+type BlogPost = Entry<BlogPostFields>;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
