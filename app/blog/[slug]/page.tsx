@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-/* eslint-disable react/no-unescaped-entities */
+
 
 interface RichTextDocument {
   nodeType: string;
@@ -18,9 +18,8 @@ interface BlogPost {
   };
 }
 
-// Allow params to be either a plain object or a Promise that resolves to one.
 interface PageProps {
-  params: { slug: string } | Promise<{ slug: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 const client = createClient({
@@ -40,7 +39,6 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 export const revalidate = 60;
 
 export default async function BlogPostPage({ params }: PageProps): Promise<JSX.Element> {
-  // Await params in case it's a promise; if it's a plain object, this resolves immediately.
   const resolvedParams = await params;
   const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
