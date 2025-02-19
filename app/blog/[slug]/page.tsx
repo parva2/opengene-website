@@ -22,7 +22,7 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
-    // include other sys properties as needed
+    // add other sys properties as needed
   };
   fields: BlogPostFields;
 }
@@ -37,7 +37,7 @@ const client = createClient({
 });
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  // Cast the result as an object with items of type BlogPost[]
+  // Cast the result to an object with items of type BlogPost[]
   const entries = (await client.getEntries({
     content_type: 'pageBlogPost',
     'fields.slug': slug,
