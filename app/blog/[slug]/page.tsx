@@ -22,7 +22,7 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
-    // add more sys properties if needed
+    // include other sys properties as needed
   };
   fields: BlogPostFields;
 }
