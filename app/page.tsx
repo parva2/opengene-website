@@ -1,4 +1,6 @@
 'use client'; // We need client-side interactivity for the form
+/* eslint-disable react/no-unescaped-entities */
+
 import { useState } from 'react';
 
 export default function HomePage() {

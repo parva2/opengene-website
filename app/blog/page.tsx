@@ -1,4 +1,6 @@
 // app/blog/page.tsx
+/* eslint-disable react/no-unescaped-entities */
+
 import { createClient } from 'contentful';
 import Link from 'next/link';
 
