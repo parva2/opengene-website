@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { createClient, Entry } from 'contentful';
+import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 /* eslint-disable react/no-unescaped-entities */
 
@@ -15,10 +15,20 @@ interface BlogPostFields {
   content: RichTextDocument;
 }
 
-export type BlogPost = Entry<BlogPostFields>;
+interface BlogPost {
+  sys: {
+    id: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    revision: number;
+    // add more sys properties if needed
+  };
+  fields: BlogPostFields;
+}
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 const client = createClient({
@@ -27,10 +37,12 @@ const client = createClient({
 });
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  const entries = await client.getEntries<BlogPost>({
+  // Cast the result as an object with items of type BlogPost[]
+  const entries = (await client.getEntries({
     content_type: 'pageBlogPost',
     'fields.slug': slug,
-  });
+  })) as { items: BlogPost[] };
+
   if (entries.items.length === 0) return null;
   return entries.items[0];
 }
@@ -38,8 +50,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 export const revalidate = 60;
 
 export default async function BlogPostPage({ params }: PageProps): Promise<JSX.Element> {
-  const resolvedParams = await params;
-  const post = await getBlogPost(resolvedParams.slug);
+  const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
   }
