@@ -18,10 +18,9 @@ interface BlogPost {
   };
 }
 
+// Allow params to be either a plain object or a Promise that resolves to one.
 interface PageProps {
-  params: {
-    slug: string;
-  };
+  params: { slug: string } | Promise<{ slug: string }>;
 }
 
 const client = createClient({
@@ -41,7 +40,9 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 export const revalidate = 60;
 
 export default async function BlogPostPage({ params }: PageProps): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+  // Await params in case it's a promise; if it's a plain object, this resolves immediately.
+  const resolvedParams = await params;
+  const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
   }
