@@ -1,5 +1,3 @@
-// app/blog/[slug]/page.tsx
-
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
@@ -36,14 +34,21 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
   return entries.items[0];
 }
 
+// Next.js complains if "params" isn't typed as a Promise in some environments.
+// We allow it to be either a plain object or a Promise that resolves to that object.
+type SlugParams = { slug: string } | Promise<{ slug: string }>;
+
 export const revalidate = 60;
 
 export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: SlugParams;
 }): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+  // Safely await "params" whether it's already an object or a promise.
+  const resolvedParams = await Promise.resolve(params);
+
+  const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
   }
