@@ -1,5 +1,4 @@
 // app/blog/page.tsx
-/* eslint-disable react/no-unescaped-entities */
 
 import { createClient } from 'contentful';
 import Link from 'next/link';
@@ -7,13 +6,15 @@ import Link from 'next/link';
 // Revalidate every 60 seconds so new posts appear without redeployment
 export const revalidate = 60;
 
+interface BlogPostFields {
+  title: string;
+  slug: string;
+  excerpt: string;
+}
+
 interface BlogPost {
   sys: { id: string };
-  fields: {
-    title: string;
-    slug: string;
-    excerpt: string;
-  };
+  fields: BlogPostFields;
 }
 
 const client = createClient({
@@ -21,8 +22,11 @@ const client = createClient({
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN!,
 });
 
-export default async function BlogPage() {
-  const entries = await client.getEntries<BlogPost>({ content_type: 'pageBlogPost' });
+export default async function BlogPage(): Promise<JSX.Element> {
+  // Fetch a list of blog posts from Contentful
+  const entries = await client.getEntries<BlogPost>({
+    content_type: 'pageBlogPost',
+  });
   const posts = entries.items;
 
   return (
