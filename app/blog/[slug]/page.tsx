@@ -22,7 +22,6 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
-    // add other sys properties as needed
   };
   fields: BlogPostFields;
 }
@@ -45,11 +44,12 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 export const revalidate = 60;
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+  // Cast params to any so we can await it and satisfy Next.js's internal type constraints.
+  const resolvedParams = await Promise.resolve(params as any);
+  const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
   }
-
   return (
     <article className="p-8">
       <h1 className="text-3xl font-bold mb-4">{post.fields.title}</h1>
