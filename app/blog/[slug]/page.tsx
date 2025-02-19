@@ -43,9 +43,9 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export const revalidate = 60;
 
+// Define props as a plain object and then wrap it with Promise.resolve to satisfy the expected type.
 export default async function BlogPostPage({ params }: { params: { slug: string } }): Promise<JSX.Element> {
-  // Cast params to any so we can await it and satisfy Next.js's internal type constraints.
-  const resolvedParams = await Promise.resolve(params as any);
+  const resolvedParams = await Promise.resolve(params);
   const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
