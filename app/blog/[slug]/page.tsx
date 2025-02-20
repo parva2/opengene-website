@@ -1,3 +1,4 @@
+import React from 'react';
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
@@ -13,7 +14,7 @@ interface BlogPost {
   sys: {
     id: string;
     type: string;
-    contentTypeId: string; // Included to satisfy Contentful's EntrySkeletonType constraint
+    contentTypeId: string; // Added to satisfy EntrySkeletonType
     createdAt: string;
     updatedAt: string;
     revision: number;
@@ -32,7 +33,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
     'fields.slug': slug,
   });
   if (entries.items.length === 0) return null;
-  return entries.items[0];
+  return entries.items[0] as BlogPost;
 }
 
 export const revalidate = 60;

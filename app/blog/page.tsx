@@ -1,3 +1,4 @@
+import React from 'react';
 import { createClient } from 'contentful';
 import Link from 'next/link';
 
@@ -10,9 +11,9 @@ interface BlogPostFields {
 }
 
 interface BlogPost {
-  sys: { 
+  sys: {
     id: string;
-    contentTypeId: string; // Included to satisfy Contentful's type constraints
+    contentTypeId: string; // Added to satisfy EntrySkeletonType
   };
   fields: BlogPostFields;
 }
@@ -27,7 +28,7 @@ export default async function BlogPage(): Promise<JSX.Element> {
   const entries = await client.getEntries<BlogPost>({
     content_type: 'pageBlogPost',
   });
-  const posts = entries.items;
+  const posts = entries.items as BlogPost[];
 
   return (
     <section className="p-8 min-h-[80vh]">
