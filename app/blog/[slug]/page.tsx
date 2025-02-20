@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from 'next/navigation';
 import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
@@ -14,6 +13,7 @@ interface BlogPost {
   sys: {
     id: string;
     type: string;
+    contentTypeId: string; // Included to satisfy Contentful's EntrySkeletonType constraint
     createdAt: string;
     updatedAt: string;
     revision: number;
@@ -37,18 +37,15 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export const revalidate = 60;
 
-export default async function BlogPostPage(props: any): Promise<JSX.Element> {
-  // Use "any" to bypass the type mismatch. Extract the slug from props.
-  const { slug } = props.params;
-  if (typeof slug !== 'string') {
-    notFound();
-  }
-
-  const post = await getBlogPost(slug);
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<JSX.Element> {
+  const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
   }
-
   return (
     <article className="p-8">
       <h1 className="text-3xl font-bold mb-4">{post.fields.title}</h1>
