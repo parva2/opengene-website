@@ -10,9 +10,6 @@ interface BlogPostFields {
   content: Document;
 }
 
-/**
- * Contentful returns sys as an object that includes a nested contentType object.
- */
 interface BlogPost {
   sys: {
     id: string;
@@ -20,15 +17,11 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
+    // Contentful returns the content type as a nested object.
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
 }
-
-/**
- * Define the props type as a union so that params may be either a plain object or a Promise.
- */
-type PageProps = { params: { slug: string } } | { params: Promise<{ slug: string }> };
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -46,9 +39,16 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export const revalidate = 60;
 
-export default async function BlogPostPage({ params }: PageProps): Promise<JSX.Element> {
-  // Resolve params whether it's a plain object or a Promise
-  const resolvedParams = await Promise.resolve(params);
+/*
+  Next.js sometimes expects the props in dynamic routes to be a Promise.
+  Since Next.js actually passes { params: { slug: string } }, we force a type conversion.
+*/
+export default async function BlogPostPage(
+  props: { params: { slug: string } }
+): Promise<JSX.Element> {
+  // Coerce the incoming props to the expected type
+  const { params } = props as unknown as { params: Promise<{ slug: string }> };
+  const resolvedParams = await params;
   const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
