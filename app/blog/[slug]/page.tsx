@@ -14,10 +14,11 @@ interface BlogPost {
   sys: {
     id: string;
     type: string;
-    contentTypeId: string; // Added to satisfy EntrySkeletonType
     createdAt: string;
     updatedAt: string;
     revision: number;
+    // Contentful returns the content type as a nested object.
+    contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
 }
@@ -28,11 +29,12 @@ const client = createClient({
 });
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  const entries = await client.getEntries<BlogPost>({
+  const entries = await client.getEntries<BlogPostFields>({
     content_type: 'pageBlogPost',
     'fields.slug': slug,
   });
   if (entries.items.length === 0) return null;
+  // Cast the fetched item to our BlogPost type.
   return entries.items[0] as BlogPost;
 }
 

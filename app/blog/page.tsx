@@ -13,7 +13,8 @@ interface BlogPostFields {
 interface BlogPost {
   sys: {
     id: string;
-    contentTypeId: string; // Added to satisfy EntrySkeletonType
+    // Contentful returns the content type as a nested object.
+    contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
 }
@@ -24,8 +25,7 @@ const client = createClient({
 });
 
 export default async function BlogPage(): Promise<JSX.Element> {
-  // Fetch a list of blog posts from Contentful
-  const entries = await client.getEntries<BlogPost>({
+  const entries = await client.getEntries<BlogPostFields>({
     content_type: 'pageBlogPost',
   });
   const posts = entries.items as BlogPost[];
