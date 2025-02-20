@@ -1,5 +1,5 @@
 import React from 'react';
-import { createClient, Entry } from 'contentful';
+import { createClient } from 'contentful';
 import Link from 'next/link';
 
 export const revalidate = 60;
@@ -10,11 +10,16 @@ interface BlogPostFields {
   excerpt: string;
 }
 
-// Define BlogPost as the Contentful Entry for BlogPostFields,
-// with an added "contentTypeId" property.
-export type BlogPost = Entry<BlogPostFields> & {
-  sys: Entry<BlogPostFields>['sys'] & { contentTypeId: string };
-};
+/**
+ * The BlogPost interface reflects the Contentful response for the blog index.
+ */
+interface BlogPost {
+  sys: {
+    id: string;
+    contentType: { sys: { id: string } };
+  };
+  fields: BlogPostFields;
+}
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -25,15 +30,7 @@ export default async function BlogPage(): Promise<JSX.Element> {
   const entries = await client.getEntries<BlogPostFields>({
     content_type: 'pageBlogPost',
   });
-  
-  // Convert each raw entry into our BlogPost type with contentTypeId.
-  const posts: BlogPost[] = entries.items.map((rawPost) => ({
-    ...rawPost,
-    sys: {
-      ...rawPost.sys,
-      contentTypeId: (rawPost.sys.contentType as { sys: { id: string } }).sys.id,
-    },
-  }));
+  const posts = entries.items as BlogPost[];
 
   return (
     <section className="p-8 min-h-[80vh]">
