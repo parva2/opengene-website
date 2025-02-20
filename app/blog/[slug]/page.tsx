@@ -1,6 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { createClient, Entry } from 'contentful';
+import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
 
@@ -10,11 +10,18 @@ interface BlogPostFields {
   content: Document;
 }
 
-// Define BlogPost as the Contentful Entry for BlogPostFields,
-// and add a property "contentTypeId" to the sys object.
-export type BlogPost = Entry<BlogPostFields> & {
-  sys: Entry<BlogPostFields>['sys'] & { contentTypeId: string };
-};
+interface BlogPost {
+  sys: {
+    id: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    revision: number;
+    // Contentful returns a nested contentType object
+    contentType: { sys: { id: string } };
+  };
+  fields: BlogPostFields;
+}
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -27,27 +34,23 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
     'fields.slug': slug,
   });
   if (entries.items.length === 0) return null;
-  
-  // Extract the raw post and add a "contentTypeId" property by reading sys.contentType.sys.id.
-  const rawPost = entries.items[0] as Entry<BlogPostFields>;
-  const post: BlogPost = {
-    ...rawPost,
-    sys: {
-      ...rawPost.sys,
-      contentTypeId: (rawPost.sys.contentType as { sys: { id: string } }).sys.id,
-    },
-  };
-  return post;
+  return entries.items[0] as BlogPost;
 }
 
 export const revalidate = 60;
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+/*
+  Next.js's internal types sometimes expect `params` to be a Promise,
+  but in practice a plain object is passed. To work around this mismatch,
+  we type our props as `any`. This is a known issue until Next.js updates
+  its type definitions.
+*/
+export default async function BlogPostPage(props: any): Promise<JSX.Element> {
+  const { slug } = props.params as { slug: string };
+  if (typeof slug !== 'string') {
+    notFound();
+  }
+  const post = await getBlogPost(slug);
   if (!post) {
     notFound();
   }
