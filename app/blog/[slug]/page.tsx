@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from 'next/navigation';
-import { createClient } from 'contentful';
+import { createClient, Entry } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
 
@@ -10,16 +9,9 @@ interface BlogPostFields {
   content: Document;
 }
 
-interface BlogPost {
-  sys: {
-    id: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    revision: number;
-  };
-  fields: BlogPostFields;
-}
+// Use the Entry type from Contentful so that the returned object
+// includes all necessary sys properties.
+export type BlogPost = Entry<BlogPostFields>;
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -37,19 +29,15 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export const revalidate = 60;
 
-export default async function BlogPostPage(props: any): Promise<JSX.Element> {
-  // Because Next.js can treat params as a promise in some edge cases,
-  // we declare props as any, then carefully extract the slug.
-  const slug = (await props.params)?.slug;
-  if (typeof slug !== 'string') {
-    notFound();
-  }
-
-  const post = await getBlogPost(slug);
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<JSX.Element> {
+  const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
   }
-
   return (
     <article className="p-8">
       <h1 className="text-3xl font-bold mb-4">{post.fields.title}</h1>

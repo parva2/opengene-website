@@ -1,9 +1,6 @@
-// app/blog/page.tsx
-
 import { createClient } from 'contentful';
 import Link from 'next/link';
 
-// Revalidate every 60 seconds so new posts appear without redeployment
 export const revalidate = 60;
 
 interface BlogPostFields {
