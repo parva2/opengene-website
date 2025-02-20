@@ -13,7 +13,6 @@ interface BlogPostFields {
 interface BlogPost {
   sys: {
     id: string;
-    // Contentful returns the content type as a nested object.
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
