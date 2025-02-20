@@ -10,6 +10,10 @@ interface BlogPostFields {
   content: Document;
 }
 
+/**
+ * This interface matches the structure of a Contentful entry for a blog post.
+ * Notice that the sys object contains a nested contentType object.
+ */
 interface BlogPost {
   sys: {
     id: string;
@@ -17,7 +21,6 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
-    // Contentful returns a nested contentType object
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
@@ -39,17 +42,29 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export const revalidate = 60;
 
-/*
-  Next.js's internal types sometimes expect `params` to be a Promise,
-  but in practice a plain object is passed. To work around this mismatch,
-  we type our props as `any`. This is a known issue until Next.js updates
-  its type definitions.
-*/
-export default async function BlogPostPage(props: any): Promise<JSX.Element> {
-  const { slug } = props.params as { slug: string };
+/**
+ * We type the incoming props as { params: unknown }.
+ * This allows us to narrow the type at runtime without using explicit `any`.
+ */
+export default async function BlogPostPage({
+  params,
+}: {
+  params: unknown;
+}): Promise<JSX.Element> {
+  // Narrow params to ensure it has a "slug" property.
+  const resolvedParams = await Promise.resolve(params);
+  if (
+    typeof resolvedParams !== 'object' ||
+    resolvedParams === null ||
+    !('slug' in resolvedParams)
+  ) {
+    notFound();
+  }
+  const { slug } = resolvedParams as { slug: string };
   if (typeof slug !== 'string') {
     notFound();
   }
+
   const post = await getBlogPost(slug);
   if (!post) {
     notFound();
