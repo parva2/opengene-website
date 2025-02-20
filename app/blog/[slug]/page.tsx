@@ -10,6 +10,9 @@ interface BlogPostFields {
   content: Document;
 }
 
+/**
+ * Contentful returns sys as an object that includes a nested contentType object.
+ */
 interface BlogPost {
   sys: {
     id: string;
@@ -17,11 +20,15 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
-    // Contentful returns the content type as a nested object.
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
 }
+
+/**
+ * Define the props type as a union so that params may be either a plain object or a Promise.
+ */
+type PageProps = { params: { slug: string } } | { params: Promise<{ slug: string }> };
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -34,18 +41,15 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
     'fields.slug': slug,
   });
   if (entries.items.length === 0) return null;
-  // Cast the fetched item to our BlogPost type.
   return entries.items[0] as BlogPost;
 }
 
 export const revalidate = 60;
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+export default async function BlogPostPage({ params }: PageProps): Promise<JSX.Element> {
+  // Resolve params whether it's a plain object or a Promise
+  const resolvedParams = await Promise.resolve(params);
+  const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
   }
