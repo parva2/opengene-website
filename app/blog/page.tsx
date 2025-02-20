@@ -1,5 +1,5 @@
 import React from 'react';
-import { createClient } from 'contentful';
+import { createClient, Entry } from 'contentful';
 import Link from 'next/link';
 
 export const revalidate = 60;
@@ -10,16 +10,8 @@ interface BlogPostFields {
   excerpt: string;
 }
 
-/**
- * The BlogPost interface reflects the Contentful response for the blog index.
- */
-interface BlogPost {
-  sys: {
-    id: string;
-    contentType: { sys: { id: string } };
-  };
-  fields: BlogPostFields;
-}
+// Use Contentful’s Entry type for BlogPostFields.
+export type BlogPost = Entry<BlogPostFields>;
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,

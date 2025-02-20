@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { createClient } from 'contentful';
+import { createClient, Entry } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
 
@@ -11,21 +10,9 @@ interface BlogPostFields {
   content: Document;
 }
 
-/**
- * This interface reflects the Contentful response.
- * Instead of a standalone "contentTypeId", Contentful returns a nested contentType object.
- */
-interface BlogPost {
-  sys: {
-    id: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    revision: number;
-    contentType: { sys: { id: string } };
-  };
-  fields: BlogPostFields;
-}
+// Use Contentful’s Entry type for BlogPostFields.
+// This automatically includes the proper sys properties.
+export type BlogPost = Entry<BlogPostFields>;
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -43,16 +30,12 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 
 export const revalidate = 60;
 
-/**
- * Due to a known mismatch in Next.js's dynamic route types,
- * we annotate the props as `any` here. This is a temporary workaround.
- */
-export default async function BlogPostPage(props: any): Promise<JSX.Element> {
-  const { slug } = props.params as { slug: string };
-  if (typeof slug !== 'string') {
-    notFound();
-  }
-  const post = await getBlogPost(slug);
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<JSX.Element> {
+  const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
   }
