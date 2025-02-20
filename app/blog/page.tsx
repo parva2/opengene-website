@@ -20,7 +20,6 @@ const client = createClient({
 });
 
 export default async function BlogPage(): Promise<JSX.Element> {
-  // Fetch a list of blog posts from Contentful
   const entries = await client.getEntries<BlogPost>({
     content_type: 'pageBlogPost',
   });
