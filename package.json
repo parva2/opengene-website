@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@contentful/experiences-sdk-react": "^1.32.0",
     "@contentful/rich-text-react-renderer": "^16.0.1",
     "@supabase/supabase-js": "^2.48.1",
     "autoprefixer": "^10.4.20",
