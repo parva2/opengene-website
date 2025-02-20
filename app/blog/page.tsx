@@ -10,10 +10,13 @@ interface BlogPostFields {
   excerpt: string;
 }
 
+/**
+ * Defines a blog post as returned in the blog index.
+ * The sys object includes a nested contentType property.
+ */
 interface BlogPost {
   sys: {
     id: string;
-    // Contentful returns the content type as a nested object:
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;

@@ -4,12 +4,19 @@ import { createClient } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
 
+/**
+ * Defines the fields of your blog post.
+ */
 interface BlogPostFields {
   title: string;
   slug: string;
   content: Document;
 }
 
+/**
+ * Defines a blog post as returned by Contentful.
+ * Notice that the sys object contains a nested contentType.
+ */
 interface BlogPost {
   sys: {
     id: string;
@@ -17,7 +24,6 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
-    // Contentful returns the content type as a nested object:
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
@@ -34,18 +40,21 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
     'fields.slug': slug,
   });
   if (entries.items.length === 0) return null;
-  // Cast the first item to our BlogPost type.
   return entries.items[0] as BlogPost;
 }
 
 export const revalidate = 60;
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+/**
+ * Due to a known mismatch in Next.js types for dynamic routes,
+ * we declare props as "any" here. (This is a temporary workaround.)
+ */
+export default async function BlogPostPage(props: any): Promise<JSX.Element> {
+  const { slug } = props.params as { slug: string };
+  if (typeof slug !== 'string') {
+    notFound();
+  }
+  const post = await getBlogPost(slug);
   if (!post) {
     notFound();
   }
