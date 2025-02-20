@@ -10,10 +10,6 @@ interface BlogPostFields {
   content: Document;
 }
 
-/**
- * This interface matches the structure of a Contentful entry for a blog post.
- * Notice that the sys object contains a nested contentType object.
- */
 interface BlogPost {
   sys: {
     id: string;
@@ -21,6 +17,7 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
+    // Contentful returns the content type as a nested object:
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
@@ -43,28 +40,17 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
 export const revalidate = 60;
 
 /**
- * We type the incoming props as { params: unknown }.
- * This allows us to narrow the type at runtime without using explicit `any`.
+ * Define the props as a union so that `params` may be either:
+ * - a plain object: { slug: string }
+ * - or a Promise that resolves to { slug: string }
  */
 export default async function BlogPostPage({
   params,
 }: {
-  params: unknown;
+  params: { slug: string } | Promise<{ slug: string }>;
 }): Promise<JSX.Element> {
-  // Narrow params to ensure it has a "slug" property.
   const resolvedParams = await Promise.resolve(params);
-  if (
-    typeof resolvedParams !== 'object' ||
-    resolvedParams === null ||
-    !('slug' in resolvedParams)
-  ) {
-    notFound();
-  }
-  const { slug } = resolvedParams as { slug: string };
-  if (typeof slug !== 'string') {
-    notFound();
-  }
-
+  const { slug } = resolvedParams;
   const post = await getBlogPost(slug);
   if (!post) {
     notFound();
