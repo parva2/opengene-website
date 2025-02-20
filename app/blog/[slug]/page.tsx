@@ -10,11 +10,6 @@ interface BlogPostFields {
   content: Document;
 }
 
-/**
- * Contentful returns the system properties in a nested structure.
- * In particular, instead of a standalone "contentTypeId", the sys object contains
- * a nested "contentType" object.
- */
 interface BlogPost {
   sys: {
     id: string;
@@ -22,6 +17,7 @@ interface BlogPost {
     createdAt: string;
     updatedAt: string;
     revision: number;
+    // Contentful returns the content type as a nested object:
     contentType: { sys: { id: string } };
   };
   fields: BlogPostFields;
@@ -38,6 +34,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | null> {
     'fields.slug': slug,
   });
   if (entries.items.length === 0) return null;
+  // Cast the first item to our BlogPost type.
   return entries.items[0] as BlogPost;
 }
 
@@ -46,15 +43,9 @@ export const revalidate = 60;
 export default async function BlogPostPage({
   params,
 }: {
-  params: unknown;
+  params: { slug: string };
 }): Promise<JSX.Element> {
-  // Narrow the type of params
-  if (typeof params !== 'object' || params === null || !('slug' in params)) {
-    notFound();
-  }
-  const { slug } = params as { slug: string };
-
-  const post = await getBlogPost(slug);
+  const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
   }
