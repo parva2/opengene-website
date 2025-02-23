@@ -1,32 +1,21 @@
-/* import React from 'react';
-import { createClient, Entry } from 'contentful';
+import React from 'react';
+import { createClient, Entry, EntrySkeletonType } from 'contentful';
 import Link from 'next/link';
+import type { JSX } from 'react';
 
 export const revalidate = 60;
 
-interface BlogPostFields {
-  title: string;
-  slug: string;
-  excerpt: string;
+// Extend Contentful's EntrySkeletonType properly
+interface BlogPostSkeleton extends EntrySkeletonType {
+  contentTypeId: 'pageBlogPost';
+  fields: {
+    title: string;
+    slug: string;
+    excerpt: string;
+  };
 }
 
-// Our BlogPost type is based on Contentful's Entry type for BlogPostFields.
-// Note that Contentful's sys object includes a nested contentType property.
-// We later "add" a contentTypeId property extracted from sys.contentType.sys.id.
-export type BlogPost = Entry<BlogPostFields> & {
-  sys: {
-    id: string;
-    type: string;
-    contentType: {
-      sys: {
-        id: string;
-        linkType: string;
-        type: string;
-      };
-    };
-    contentTypeId: string; // Ensure contentTypeId is included
-  };
-};
+export type BlogPost = Entry<BlogPostSkeleton>;
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -34,17 +23,13 @@ const client = createClient({
 });
 
 export default async function BlogPage(): Promise<JSX.Element> {
-  // Pass the full BlogPost type as generic so that the returned items have sys and fields.
-  const entries = await client.getEntries<BlogPost>({
+  const entries = await client.getEntries<BlogPostSkeleton>({
     content_type: 'pageBlogPost',
-  });
-  // Map over the returned items to add contentTypeId
+  } as Record<string, any>);
+
   const posts = entries.items.map((rawPost) => ({
     ...rawPost,
-    sys: {
-      ...rawPost.sys,
-      contentTypeId: (rawPost.sys.contentType as { sys: { id: string } }).sys.id,
-    },
+    sys: rawPost.sys,
   })) as BlogPost[];
 
   return (
@@ -56,10 +41,14 @@ export default async function BlogPage(): Promise<JSX.Element> {
             key={post.sys.id}
             className="bg-white p-4 rounded shadow hover:shadow-lg transition-shadow"
           >
-            <h2 className="text-xl font-semibold mb-2">{post.fields.title}</h2>
-            <p className="text-gray-600 mb-4">{post.fields.excerpt}</p>
+            <h2 className="text-xl font-semibold mb-2">
+              {String(post.fields?.title ?? 'Untitled Post')} {/* ✅ Fix ReactNode */}
+            </h2>
+            <p className="text-gray-600 mb-4">
+              {String(post.fields?.excerpt ?? 'No excerpt available')} {/* ✅ Fix ReactNode */}
+            </p>
             <Link
-              href={`/blog/${post.fields.slug}`}
+              href={`/blog/${post.fields?.slug ?? '#'}`} // ✅ Avoid undefined URLs
               className="inline-block px-4 py-2 bg-blue-900 text-white rounded hover:bg-blue-800"
             >
               Read More
@@ -70,4 +59,3 @@ export default async function BlogPage(): Promise<JSX.Element> {
     </section>
   );
 }
-*/
