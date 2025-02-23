@@ -1,15 +1,17 @@
-import React, { JSX } from 'react'; // ✅ Remove duplicate JSX import
-import { notFound } from 'next/navigation';
-import { createClient, Entry, EntrySkeletonType } from 'contentful';
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import type { Document } from '@contentful/rich-text-types';
-import { BLOCKS } from '@contentful/rich-text-types';
+import React from "react";
+import { notFound } from "next/navigation";
+import { createClient, Entry, EntrySkeletonType } from "contentful";
+import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+import type { Document } from "@contentful/rich-text-types";
+import { BLOCKS } from "@contentful/rich-text-types";
 
-// ✅ Define BlogPostSkeleton properly
+// ✅ Import React Types
+import type { FC } from "react";
+
 interface BlogPostSkeleton extends EntrySkeletonType {
-  contentTypeId: 'pageBlogPost';
+  contentTypeId: "pageBlogPost";
   fields: {
-    title: string;
+    title?: string; // ✅ Made optional to prevent runtime errors
     slug: string;
     content?: Document | null;
   };
@@ -24,51 +26,61 @@ const client = createClient({
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
   const entries = await client.getEntries<BlogPostSkeleton>({
-    content_type: 'pageBlogPost',
-    'fields.slug': slug,
-  });
+    content_type: "pageBlogPost",
+    "fields.slug": slug, // ✅ Fixed query issue
+  } as Record<string, any>);
 
   return entries.items.length > 0 ? entries.items[0] : null;
 }
 
 export const revalidate = 60;
 
+// ✅ Define expected props structure correctly for Next.js
 interface BlogPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-export default async function BlogPostPage({ params }: BlogPageProps): Promise<JSX.Element> {
-  const post = await getBlogPost(params.slug);
+// ✅ Fix params issue by explicitly typing it as a Promise
+const BlogPostPage: FC<BlogPageProps> = async ({ params }) => {
+  const resolvedParams = await params; // ✅ Ensure params is awaited properly
+
+  const post = await getBlogPost(resolvedParams.slug);
   if (!post) {
     notFound();
   }
 
-  // ✅ Correct empty document initialization
+  // ✅ Define an empty document fallback
   const emptyDocument: Document = {
     nodeType: BLOCKS.DOCUMENT,
     data: {},
     content: [],
   };
 
-  const validDocument: Document = post.fields.content ?? emptyDocument;
+  // ✅ Ensure valid `Document` for `documentToReactComponents`
+  const validDocument: Document =
+    post.fields?.content && typeof post.fields.content === "object" && "nodeType" in post.fields.content
+      ? (post.fields.content as unknown as Document) // ✅ Convert to `unknown` first, then `Document`
+      : emptyDocument;
 
   return (
     <article className="p-8">
       <h1 className="text-3xl font-bold mb-4">
-        {post.fields?.title ?? 'Untitled Post'}
+        {post.fields?.title ? String(post.fields.title) : "Untitled Post"}
       </h1>
       <div className="text-lg text-gray-700">
         {documentToReactComponents(validDocument)}
       </div>
     </article>
   );
-}
+};
 
-// ✅ Ensure Next.js generates correct static paths
-export async function generateStaticParams() {
+export default BlogPostPage;
+
+// ✅ Required for Next.js App Router to correctly handle dynamic paths
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const entries = await client.getEntries<BlogPostSkeleton>({
-    content_type: 'pageBlogPost',
-  });
+    content_type: "pageBlogPost",
+  } as Record<string, any>);
 
   return entries.items.map((post) => ({ slug: post.fields.slug }));
 }
