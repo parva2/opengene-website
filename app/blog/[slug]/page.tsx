@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { JSX } from 'react'; // ✅ Remove duplicate JSX import
 import { notFound } from 'next/navigation';
 import { createClient, Entry, EntrySkeletonType } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
 import { BLOCKS } from '@contentful/rich-text-types';
-// import type { Metadata } from "next"; // ✅ Import Metadata (optional)
-import type { JSX } from 'react';
 
-
+// ✅ Define BlogPostSkeleton properly
 interface BlogPostSkeleton extends EntrySkeletonType {
   contentTypeId: 'pageBlogPost';
   fields: {
@@ -27,43 +25,37 @@ const client = createClient({
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
   const entries = await client.getEntries<BlogPostSkeleton>({
     content_type: 'pageBlogPost',
-    ...(slug ? { 'fields.slug': slug } : {}),
-  } as Record<string, any>);
+    'fields.slug': slug,
+  });
 
-  if (entries.items.length === 0) return null;
-  return entries.items[0];
+  return entries.items.length > 0 ? entries.items[0] : null;
 }
 
 export const revalidate = 60;
 
-// ✅ Define expected props structure
 interface BlogPageProps {
   params: { slug: string };
 }
 
-// ✅ Fix params issue by explicitly typing it
 export default async function BlogPostPage({ params }: BlogPageProps): Promise<JSX.Element> {
   const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
   }
 
-  // ✅ Define an empty document fallback
+  // ✅ Correct empty document initialization
   const emptyDocument: Document = {
     nodeType: BLOCKS.DOCUMENT,
     data: {},
     content: [],
   };
 
-  const validDocument: Document =
-    post.fields?.content && typeof post.fields.content === 'object' && 'nodeType' in post.fields.content
-      ? (post.fields.content as unknown as Document)
-      : emptyDocument;
+  const validDocument: Document = post.fields.content ?? emptyDocument;
 
   return (
     <article className="p-8">
       <h1 className="text-3xl font-bold mb-4">
-        {String(post.fields?.title ?? 'Untitled Post')}
+        {post.fields?.title ?? 'Untitled Post'}
       </h1>
       <div className="text-lg text-gray-700">
         {documentToReactComponents(validDocument)}
@@ -72,11 +64,11 @@ export default async function BlogPostPage({ params }: BlogPageProps): Promise<J
   );
 }
 
-// ✅ Required for Next.js App Router to correctly handle dynamic paths
+// ✅ Ensure Next.js generates correct static paths
 export async function generateStaticParams() {
   const entries = await client.getEntries<BlogPostSkeleton>({
     content_type: 'pageBlogPost',
-  } as Record<string, any>);
+  });
 
   return entries.items.map((post) => ({ slug: post.fields.slug }));
 }
