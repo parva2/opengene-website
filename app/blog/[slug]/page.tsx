@@ -3,16 +3,17 @@ import { notFound } from 'next/navigation';
 import { createClient, Entry, EntrySkeletonType } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
-import { BLOCKS } from '@contentful/rich-text-types'; // ✅ Import BLOCKS for Contentful types
+import { BLOCKS } from '@contentful/rich-text-types';
+import type { Metadata } from "next"; // ✅ Import Metadata (optional)
 import type { JSX } from 'react';
 
-// Define BlogPostSkeleton properly
+
 interface BlogPostSkeleton extends EntrySkeletonType {
   contentTypeId: 'pageBlogPost';
   fields: {
     title: string;
     slug: string;
-    content?: Document | null; // ✅ Allow optional content
+    content?: Document | null;
   };
 }
 
@@ -26,21 +27,22 @@ const client = createClient({
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
   const entries = await client.getEntries<BlogPostSkeleton>({
     content_type: 'pageBlogPost',
-    ...(slug ? { 'fields.slug': slug } : {}), // ✅ Fixed query syntax
+    ...(slug ? { 'fields.slug': slug } : {}),
   } as Record<string, any>);
 
   if (entries.items.length === 0) return null;
-
   return entries.items[0];
 }
 
 export const revalidate = 60;
 
-export default async function BlogPostPage({
-  params,
-}: {
+// ✅ Define expected props structure
+interface BlogPageProps {
   params: { slug: string };
-}): Promise<JSX.Element> {
+}
+
+// ✅ Fix params issue by explicitly typing it
+export default async function BlogPostPage({ params }: BlogPageProps): Promise<JSX.Element> {
   const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
@@ -53,7 +55,6 @@ export default async function BlogPostPage({
     content: [],
   };
 
-  // ✅ Ensure valid `Document` before rendering
   const validDocument: Document =
     post.fields?.content && typeof post.fields.content === 'object' && 'nodeType' in post.fields.content
       ? (post.fields.content as unknown as Document)
@@ -69,4 +70,13 @@ export default async function BlogPostPage({
       </div>
     </article>
   );
+}
+
+// ✅ Required for Next.js App Router to correctly handle dynamic paths
+export async function generateStaticParams() {
+  const entries = await client.getEntries<BlogPostSkeleton>({
+    content_type: 'pageBlogPost',
+  } as Record<string, any>);
+
+  return entries.items.map((post) => ({ slug: post.fields.slug }));
 }
