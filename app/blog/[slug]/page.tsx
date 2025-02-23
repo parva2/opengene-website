@@ -1,5 +1,4 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
+/* import { notFound } from 'next/navigation';
 import { createClient, Entry } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
@@ -8,11 +7,23 @@ interface BlogPostFields {
   title: string;
   slug: string;
   content: Document;
+  excerpt: string;
 }
 
-// Use Contentful’s Entry type for BlogPostFields.
-// This automatically includes the proper sys properties.
-export type BlogPost = Entry<BlogPostFields>;
+export type BlogPost = Entry<BlogPostFields> & {
+  sys: {
+    id: string;
+    type: string;
+    contentType: {
+      sys: {
+        id: string;
+        linkType: string;
+        type: string;
+      };
+    };
+    contentTypeId: string;
+  };
+};
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -20,21 +31,25 @@ const client = createClient({
 });
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  const entries = await client.getEntries<BlogPostFields>({
+  const entries = await client.getEntries<BlogPost>({
     content_type: 'pageBlogPost',
     'fields.slug': slug,
   });
   if (entries.items.length === 0) return null;
-  return entries.items[0] as BlogPost;
+  return entries.items[0];
 }
 
 export const revalidate = 60;
 
+interface BlogPostPageProps {
+  params: {
+    slug: string;
+  };
+}
+
 export default async function BlogPostPage({
   params,
-}: {
-  params: { slug: string };
-}): Promise<JSX.Element> {
+}: BlogPostPageProps): Promise<JSX.Element> {
   const post = await getBlogPost(params.slug);
   if (!post) {
     notFound();
@@ -48,3 +63,4 @@ export default async function BlogPostPage({
     </article>
   );
 }
+*/

@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import { createClient, Entry } from 'contentful';
 import Link from 'next/link';
 
@@ -10,8 +10,23 @@ interface BlogPostFields {
   excerpt: string;
 }
 
-// Use Contentful’s Entry type for BlogPostFields.
-export type BlogPost = Entry<BlogPostFields>;
+// Our BlogPost type is based on Contentful's Entry type for BlogPostFields.
+// Note that Contentful's sys object includes a nested contentType property.
+// We later "add" a contentTypeId property extracted from sys.contentType.sys.id.
+export type BlogPost = Entry<BlogPostFields> & {
+  sys: {
+    id: string;
+    type: string;
+    contentType: {
+      sys: {
+        id: string;
+        linkType: string;
+        type: string;
+      };
+    };
+    contentTypeId: string; // Ensure contentTypeId is included
+  };
+};
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID!,
@@ -19,10 +34,18 @@ const client = createClient({
 });
 
 export default async function BlogPage(): Promise<JSX.Element> {
-  const entries = await client.getEntries<BlogPostFields>({
+  // Pass the full BlogPost type as generic so that the returned items have sys and fields.
+  const entries = await client.getEntries<BlogPost>({
     content_type: 'pageBlogPost',
   });
-  const posts = entries.items as BlogPost[];
+  // Map over the returned items to add contentTypeId
+  const posts = entries.items.map((rawPost) => ({
+    ...rawPost,
+    sys: {
+      ...rawPost.sys,
+      contentTypeId: (rawPost.sys.contentType as { sys: { id: string } }).sys.id,
+    },
+  })) as BlogPost[];
 
   return (
     <section className="p-8 min-h-[80vh]">
@@ -47,3 +70,4 @@ export default async function BlogPage(): Promise<JSX.Element> {
     </section>
   );
 }
+*/
