@@ -4,7 +4,7 @@ import { createClient, Entry, EntrySkeletonType } from 'contentful';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { Document } from '@contentful/rich-text-types';
 import { BLOCKS } from '@contentful/rich-text-types';
-import type { Metadata } from "next"; // ✅ Import Metadata (optional)
+// import type { Metadata } from "next"; // ✅ Import Metadata (optional)
 import type { JSX } from 'react';
 
 
