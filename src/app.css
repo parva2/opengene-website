@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+:root {
+	--max-w-site: 900px;
+	--site-padding: 1rem;
+	--site-padding-sm: 3rem;
+}
+
+@theme {
+	--font-sans: Outfit, sans-serif;
+	--color-primary: oklch(0.623 0.214 259.815);
+	--color-bg: #f1f1f1;
+	--color-fg: #000e38;
+	--color-muted: #8396b7;
+	--color-border: #e5e8ec;
+	--breakpoint-showNavLinks: 870px;
+}
+
+@utility site-padding {
+	@apply px-(--site-padding) sm:px-(--site-padding-sm);
+}
+
+body {
+	@apply text-fg m-auto flex w-full max-w-(--max-w-site) flex-col;
+}
+@utility contain {
+	@apply site-padding w-full max-w-(--max-w-site);
+}
