@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Hero from '$blocks/Hero.svelte';
-	import Features from '$components/cards/Features.svelte';
-	import Customers from '$components/cards/Customers.svelte';
-	import Reviews from '$components/cards/Reviews.svelte';
+	import Hero from '$blocks/landing-page/Hero.svelte';
+	import Features from '$blocks/landing-page/cards/Features.svelte';
+	import Customers from '$blocks/landing-page/cards/Customers.svelte';
+	import Reviews from '$blocks/landing-page/cards/Reviews.svelte';
 </script>
 
 <div class="contain mb-40 flex flex-col gap-20">

@@ -22,9 +22,16 @@
 	@apply px-(--site-padding) sm:px-(--site-padding-sm);
 }
 
+@utility contain {
+	@apply site-padding w-full max-w-(--max-w-site);
+}
+
 body {
 	@apply text-fg m-auto flex w-full max-w-(--max-w-site) flex-col;
 }
-@utility contain {
-	@apply site-padding w-full max-w-(--max-w-site);
+
+.prose h1,
+h2,
+h3 {
+	@apply !font-normal;
 }

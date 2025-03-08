@@ -20,6 +20,6 @@
 
 <Meta />
 <Navbar />
-<!-- <MobileMenu /> -->
+<MobileMenu />
 {@render children()}
 <Footer />

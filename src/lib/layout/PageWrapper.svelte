@@ -20,7 +20,7 @@
 </script>
 
 <div
-	class="container mt-10 flex min-h-[70vh] w-full flex-col items-center gap-10 pb-[15vh] {className}"
+	class="contain mt-10 flex min-h-[70vh] w-full flex-col items-center gap-10 pb-[15vh] {className}"
 >
 	{#if !title?.hidden}
 		<PageTitle title={getTitle(page.data.title)} />

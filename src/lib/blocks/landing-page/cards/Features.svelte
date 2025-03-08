@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { IconCoins, IconDna, IconLock } from '@tabler/icons-svelte';
+	import { fly } from 'svelte/transition';
 
 	const cards = [
 		{

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Logo from '$components/brand/Logo.svelte';
 	import { page } from '$app/state';
 	import { IconMenu, IconX } from '@tabler/icons-svelte';
 	import { fade } from 'svelte/transition';
@@ -18,7 +19,7 @@
 			label: 'About'
 		},
 		{
-			path: '/blog',
+			path: 'https://bloggeney1.hashnode.dev/',
 			newTab: true,
 			label: 'Blog'
 		},
@@ -28,7 +29,7 @@
 			label: 'Whitepaper'
 		},
 		{
-			path: '/contact',
+			path: 'https://airtable.com/appszbSL9vv2LcQww/pagTliTGfOOWcIOsV/form',
 			newTab: true,
 			label: 'Contact'
 		}
@@ -37,25 +38,23 @@
 
 <div class="top-0 z-10 flex h-20 w-full items-center justify-center">
 	<nav class="text-md contain flex h-full w-full items-center justify-between">
-		<img class="w-[120px]" src="/logo.svg" alt="logo" />
-		<div class="flex items-center gap-3 showNavLinks:hidden">
-			<button
-				class="nav-item col-start-3 justify-self-end showNavLinks:hidden"
-				name="menu"
-				aria-label="menu"
-				onclick={() => mobileMenu.toggle()}
-			>
-				{#if mobileMenu.isOpen}
-					<div in:fade={{ duration: 250 }}>
-						<IconX />
-					</div>
-				{:else}
-					<div in:fade={{ duration: 250 }}>
-						<IconMenu />
-					</div>
-				{/if}
-			</button>
-		</div>
+		<Logo />
+		<button
+			class="nav-item col-start-3 cursor-pointer justify-self-end showNavLinks:hidden"
+			name="menu"
+			aria-label="menu"
+			onclick={() => mobileMenu.toggle()}
+		>
+			{#if mobileMenu.isOpen}
+				<div in:fade={{ duration: 250 }}>
+					<IconX />
+				</div>
+			{:else}
+				<div in:fade={{ duration: 250 }}>
+					<IconMenu />
+				</div>
+			{/if}
+		</button>
 		<div class="hidden items-center justify-end gap-4 showNavLinks:flex">
 			<div class="flex items-center gap-8">
 				{#each links as link}
