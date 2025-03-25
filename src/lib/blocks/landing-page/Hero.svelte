@@ -76,8 +76,8 @@
 		</p>
 	</div>
 	<img
-		class="z-1 pointer-events-none hidden h-[370px] w-auto min-w-fit max-w-[50%] select-none drop-shadow-2xl showNavLinks:block"
-		src="/genie.png"
+		class="showNavLinks:block pointer-events-none absolute -top-[320px] -right-[250px] -z-1 hidden h-[1000px] rotate-[40deg] select-none"
+		src="/dna.png"
 		alt="DNA strand"
 	/>
 </section>
