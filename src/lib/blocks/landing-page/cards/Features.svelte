@@ -23,7 +23,9 @@
 
 <div class="flex flex-col gap-2 showNavLinks:flex-row">
 	{#each cards as card}
-		<div class="flex w-full flex-col gap-3 rounded-lg border-[0.5px] border-border p-6">
+		<div
+			class="flex w-full flex-col gap-3 rounded-lg border-[0.5px] border-border p-6 backdrop-blur-lg"
+		>
 			<div class="flex items-center gap-2">
 				<card.icon />
 				<p>{card.title}</p>
