@@ -33,7 +33,7 @@
 
 <div class="contain mb-40 flex w-full flex-col items-center justify-center">
 	<footer
-		class="text-bg flex w-full flex-col gap-10 rounded-lg bg-gradient-to-b from-primary to-blue-700 px-10 py-10 shadow-lg"
+		class="text-bg from-primary flex w-full flex-col gap-10 rounded-lg bg-gradient-to-b to-blue-700 px-10 py-10 pr-20 shadow-lg"
 	>
 		<div class="flex flex-col justify-between gap-10 md:flex-row">
 			<div class="mb-4 flex flex-col">
@@ -43,34 +43,25 @@
 				</p>
 			</div>
 
-			<div class="flex flex-wrap gap-12">
-				{#each footerSections as section}
-					<div class="flex flex-col">
-						<p class="mb-4 font-medium">{section.title}</p>
-						<div class="flex flex-col gap-2">
-							{#each section.links as link}
-								<a href={link.href} class="text-bg/90 hover:underline">{link.label}</a>
-							{/each}
-						</div>
-					</div>
+			<div class="flex gap-3">
+				{#each socialLinks as { icon: Icon, label, href }}
+					<a target="_blank" {href} aria-label={label} class="transition-opacity hover:opacity-80">
+						<Icon class="size-8" />
+					</a>
 				{/each}
 			</div>
 		</div>
-
-		<div class="flex gap-3">
-			{#each socialLinks as { icon: Icon, label, href }}
-				<a target="_blank" {href} aria-label={label} class="transition-opacity hover:opacity-80">
-					<Icon class="h-6 w-6" />
-				</a>
+		<div class="flex flex-wrap gap-12">
+			{#each footerSections as section}
+				<div class="flex flex-col">
+					<p class="mb-4 font-medium">{section.title}</p>
+					<div class="flex flex-col gap-2">
+						{#each section.links as link}
+							<a href={link.href} class="text-bg/90 hover:underline">{link.label}</a>
+						{/each}
+					</div>
+				</div>
 			{/each}
 		</div>
 	</footer>
-	<div class="flex w-full flex-col items-center gap-2">
-		{#each { length: 5 }, n}
-			<div
-				style="width: {170 / n}%"
-				class="h-[3px] max-w-full rounded-full bg-gradient-to-r from-primary to-blue-300"
-			></div>
-		{/each}
-	</div>
 </div>

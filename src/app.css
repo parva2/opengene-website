@@ -27,7 +27,7 @@
 }
 
 body {
-	@apply text-fg m-auto flex w-full max-w-(--max-w-site) flex-col;
+	@apply text-fg m-auto flex w-full max-w-(--max-w-site) flex-col overflow-x-hidden;
 }
 
 .prose h1,
