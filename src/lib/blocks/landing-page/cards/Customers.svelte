@@ -17,7 +17,7 @@
 		{
 			title: 'Academic Institutions',
 			blob: '/3.png',
-			subtitle: 'Affordable, Ethics-Ready Datasets',
+			subtitle: 'Affordable, Transparent Datasets',
 			img: 'https://res.cloudinary.com/mediacdnmain/image/upload/v1747784592/image_3_vzscto.png',
 			body: `Pay per dataset or subscribe for always-on access to diverse cohorts that continually update. Built-in consent trails and GDPR-level privacy let you accelerate publications without compromising participant trust or IRB requirements.`
 		},
