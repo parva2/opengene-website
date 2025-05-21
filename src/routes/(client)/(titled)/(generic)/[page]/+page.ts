@@ -3,10 +3,11 @@ import PP from './content/pp.md';
 import { error } from '@sveltejs/kit';
 
 export const load = async ({ route, params }) => {
-	const { title, content } = pages[params.page];
-	if (!title) {
+	const page = pages[params.page];
+	if (!page) {
 		error(404);
 	}
+	const { title, content } = page;
 	return {
 		title,
 		content

@@ -66,7 +66,7 @@
 				</button>
 			</div>
 		{/if}
-		<p class="text-muted mt-3 flex items-center gap-2 text-sm font-light">
+		<!-- <p class="text-muted mt-3 flex items-center gap-2 text-sm font-light">
 			<span class="relative flex size-2">
 				<span
 					class="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
@@ -74,7 +74,7 @@
 				<span class="bg-primary relative inline-flex size-2 rounded-full"></span>
 			</span>
 			3,600+ people are waiting for launch.
-		</p>
+		</p> -->
 	</div>
 	<img
 		class="showNavLinks:block pointer-events-none absolute -top-[320px] -right-[250px] -z-1 hidden h-[1000px] rotate-[40deg] select-none"
