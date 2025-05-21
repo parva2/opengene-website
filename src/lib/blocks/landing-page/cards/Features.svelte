@@ -4,33 +4,33 @@
 
 	const cards = [
 		{
-			title: 'Ethical monetization',
-			body: 'No longer is your DNA just a static piece of information; it becomes a dynamic resource that you control, use, and even profit from while contributing to science.',
+			title: 'Transparent Rewards',
+			body: "Your genome isn't locked in a lab anymore. Upload once, see exactly when and how it's used, and earn automatic payouts—no middlemen, no geographic limits.",
 			icon: IconCoins
 		},
 		{
-			title: 'Genetic analysis',
-			body: 'You’ll get actionable insights ranging from disease risk assessments to tailored nutritional guidance. OpenGene can suggest lifestyle modifications to mitigate risks.',
+			title: 'AI-Powered Health Insights',
+			body: 'OpenGene ingests any 23andMe, Ancestry, or clinical VCF file, then runs deep AI analysis to deliver disease-risk scores, medication guidance, and lifestyle recommendations you can act on today.',
 			icon: IconDna
 		},
 		{
-			title: 'Full security',
-			body: 'You retain full ownership of your data. OpenGene’s decentralized identity system ensures that users can revoke access or alter permissions at any time.',
+			title: 'Zero-Compromise Security',
+			body: 'You retain 100 % ownership. Data are encrypted, anonymity, and stored on a verifiable blockchain; permissions can be changed—or revoked—whenever you choose.',
 			icon: IconLock
 		}
 	];
 </script>
 
-<div class="flex flex-col gap-2 showNavLinks:flex-row">
+<div class="showNavLinks:flex-row flex flex-col gap-2">
 	{#each cards as card}
 		<div
-			class="flex w-full flex-col gap-3 rounded-lg border-[0.5px] border-border p-6 backdrop-blur-lg"
+			class="border-border flex w-full flex-col gap-3 rounded-lg border-[0.5px] p-6 px-4 backdrop-blur-lg"
 		>
 			<div class="flex items-center gap-2">
 				<card.icon />
-				<p>{card.title}</p>
+				<p class="text-sm">{card.title}</p>
 			</div>
-			<p class="max-w-prose text-sm text-muted">{card.body}</p>
+			<p class="text-muted max-w-prose text-sm">{card.body}</p>
 		</div>
 	{/each}
 </div>

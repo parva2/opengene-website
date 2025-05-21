@@ -32,6 +32,7 @@
 		{
 			path: 'https://bloggeney1.hashnode.dev/',
 			newTab: true,
+			hidden: true,
 			label: 'Blog'
 		},
 		{
@@ -62,20 +63,22 @@
 			]
 		}}
 		transition:fly={{ y: 500 }}
-		class="contain absolute left-0 right-0 top-[4rem] z-50 flex h-screen min-w-min flex-col bg-background bg-white pb-20 pt-8"
+		class="contain bg-background absolute top-[4rem] right-0 left-0 z-50 flex h-screen min-w-min flex-col bg-white pt-8 pb-20"
 	>
 		<div class="flex flex-col items-start gap-4 *:w-full *:text-left">
-			<div class="flex flex-col divide-y divide-dashed divide-border">
+			<div class="divide-border flex flex-col divide-y divide-dashed">
 				{#each links as link}
-					<div class="py-4">
-						<a
-							class="hover:text-fg text-muted"
-							target={link.newTab ? '_blank' : '_self'}
-							href={link.path}
-						>
-							{link.label}
-						</a>
-					</div>
+					{#if !link.hidden}
+						<div class="py-4">
+							<a
+								class="hover:text-fg text-muted"
+								target={link.newTab ? '_blank' : '_self'}
+								href={link.path}
+							>
+								{link.label}
+							</a>
+						</div>
+					{/if}
 				{/each}
 			</div>
 		</div>

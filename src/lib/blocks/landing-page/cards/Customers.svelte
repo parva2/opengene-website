@@ -1,36 +1,52 @@
 <script lang="ts">
 	const cards = [
 		{
-			title: 'Individuals',
+			title: 'DNA Providers',
 			blob: '/1.png',
-			body: 'We allow users to sequence their DNA—often for free or at a minimal cost (around $50 for full genome sequencing)—and retain full ownership of their data. Our decentralized identity system ensures that users can revoke access or alter permissions at any time.'
+			img: 'https://res.cloudinary.com/mediacdnmain/image/upload/v1747784592/image_1_gde7a0.png',
+			subtitle: 'Own and Earn',
+			body: "Upload an existing genetic file or sequence at partner labs for as little as $50. Your data stays encrypted and under your control—yet earns you automatic payouts every time it's used for research, plus instant AI-powered health insights you can act on today."
 		},
 		{
 			title: 'Pharmaceutical Companies',
 			blob: '/2.png',
-			body: 'Our platform offers pharmaceutical companies direct access to pre-screened, consented genetic data from a global pool of participants. This streamlines the recruitment process—from years to mere months—significantly reducing R&D expenses.'
+			subtitle: 'Recruit in Weeks, Not Years',
+			img: 'https://res.cloudinary.com/mediacdnmain/image/upload/v1747784593/image_2_pga3rv.png',
+			body: "Tap a pre-screened, permissioned pool of global genomes. Smart-contract licensing trims recruitment costs and cuts R&D timelines from years to mere months—all while meeting the industry's most demanding compliance standards."
 		},
 		{
 			title: 'Academic Institutions',
 			blob: '/3.png',
-			body: 'Our tiered pricing structure—ranging from $200 to $500 per dataset for smaller studies or subscription-based models for larger initiatives—enables academic researchers to accelerate discoveries while upholding strict ethical standards.'
+			subtitle: 'Affordable, Ethics-Ready Datasets',
+			img: 'https://res.cloudinary.com/mediacdnmain/image/upload/v1747784592/image_3_vzscto.png',
+			body: `Pay per dataset or subscribe for always-on access to diverse cohorts that continually update. Built-in consent trails and GDPR-level privacy let you accelerate publications without compromising participant trust or IRB requirements.`
 		},
 		{
 			title: 'Researchers',
 			blob: '/4.png',
-			body: "Recruiting participants for clinical studies is a time-consuming and costly endeavor. Our platform's global reach and targeted matching algorithms allow researchers to quickly assemble diverse cohorts pre-screened for specific genetic markers."
+			img: 'https://res.cloudinary.com/mediacdnmain/image/upload/v1747784592/image_4_i8mpa5.png',
+			subtitle: 'Instant, Targeted Cohort Matching',
+			body: `Our AI matching engine finds participants who meet precise genetic markers in minutes, not months. Assemble statistically powerful, diversity-balanced study groups and focus your time on discovery, not recruitment.`
 		}
 	];
 </script>
 
-<div class="grid gap-2 showNavLinks:grid-cols-2">
+<div class="showNavLinks:grid-cols-2 grid gap-4">
 	{#each cards as card}
 		<div
-			class="flex flex-col gap-3 rounded-lg border-[0.5px] border-border bg-cover bg-center p-6"
+			class="border-border flex flex-col rounded-lg border-[0.5px] bg-cover bg-center"
 			style="background-image: url({card.blob});"
 		>
-			<p class="text-xs font-semibold uppercase tracking-widest">{card.title}</p>
-			<p class="max-w-prose text-sm">{card.body}</p>
+			<div class="relative flex flex-col gap-2">
+				<img class="rounded-t-lg" src={card.img} alt="" />
+				<p
+					class="absolute bottom-4 left-4 text-lg text-white uppercase drop-shadow-[5px_5px_10px_rgba(0,0,0,0.85)]"
+				>
+					{card.title}
+				</p>
+			</div>
+			<p class="mx-4 mt-6 font-medium">{card.subtitle}</p>
+			<p class="m-4 mb-6 max-w-prose text-sm">{card.body}</p>
 		</div>
 	{/each}
 </div>

@@ -3,7 +3,7 @@
 @plugin '@tailwindcss/typography';
 
 :root {
-	--max-w-site: 900px;
+	--max-w-site: 1000px;
 	--site-padding: 1rem;
 	--site-padding-sm: 3rem;
 }

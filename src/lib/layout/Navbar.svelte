@@ -11,6 +11,7 @@
 		path: string;
 		label: string;
 		newTab?: boolean;
+		hidden?: boolean;
 	};
 
 	const links: Link[] = [
@@ -21,6 +22,7 @@
 		{
 			path: 'https://bloggeney1.hashnode.dev/',
 			newTab: true,
+			hidden: true,
 			label: 'Blog'
 		},
 		{
@@ -40,7 +42,7 @@
 	<nav class="text-md contain flex h-full w-full items-center justify-between">
 		<Logo />
 		<button
-			class="nav-item col-start-3 cursor-pointer justify-self-end showNavLinks:hidden"
+			class="nav-item showNavLinks:hidden col-start-3 cursor-pointer justify-self-end"
 			name="menu"
 			aria-label="menu"
 			onclick={() => mobileMenu.toggle()}
@@ -55,16 +57,18 @@
 				</div>
 			{/if}
 		</button>
-		<div class="hidden items-center justify-end gap-4 showNavLinks:flex">
+		<div class="showNavLinks:flex hidden items-center justify-end gap-4">
 			<div class="flex items-center gap-8">
 				{#each links as link}
-					<a
-						class="hover:text-fg text-muted transition-colors"
-						target={link.newTab ? '_blank' : '_self'}
-						href={link.path}
-					>
-						{link.label}
-					</a>
+					{#if !link.hidden}
+						<a
+							class="hover:text-fg text-muted transition-colors"
+							target={link.newTab ? '_blank' : '_self'}
+							href={link.path}
+						>
+							{link.label}
+						</a>
+					{/if}
 				{/each}
 			</div>
 		</div>

@@ -14,12 +14,13 @@
 	class="showNavLinks:mt-20 relative mt-10 flex w-full flex-col justify-between text-center sm:flex-row"
 >
 	<div class="z-2 flex w-full flex-col gap-2 *:text-left">
-		<h1 class="text-fg text-[3.4rem] leading-[1] tracking-tighter">
-			Get paid <br class="showNavLinks:block hidden" /> for your genes.
+		<h1
+			class="bg-gradient-to-br from-[#0068c9] to-[#74bcff] bg-clip-text text-[3.4rem] leading-[1] font-medium tracking-tighter text-transparent"
+		>
+			The World's First <br /> Genomics Blockchain
 		</h1>
 		<p class="text-muted mt-3 text-xl leading-snug font-light">
-			Earn every time your anonymized 23andMe or <br class="hidden sm:block" /> AncestryDNA report gets
-			used by scientists.
+			Share once, stay anonymous, and earn <br /> every time your genome powers new cures.
 		</p>
 		<div class="my-4 flex flex-col gap-2">
 			{#each benefits as benefit}
