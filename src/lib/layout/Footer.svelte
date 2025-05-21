@@ -6,10 +6,10 @@
 	type FooterSection = { title: string; links: FooterLink[] };
 
 	const footerSections: FooterSection[] = [
-		{
-			title: 'Resources',
-			links: [{ label: 'Blog', href: 'https://bloggeney1.hashnode.dev/' }]
-		},
+		// {
+		// 	title: 'Resources',
+		// 	links: [{ label: 'Blog', href: 'https://bloggeney1.hashnode.dev/' }]
+		// },
 		{
 			title: 'Developers',
 			links: [{ label: 'Whitepaper', href: '/whitepaper.pdf' }]
